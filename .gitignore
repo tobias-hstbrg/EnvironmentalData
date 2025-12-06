@@ -24,6 +24,7 @@ build/
 .project
 .classpath
 .settings/
+*.xml
 
 # OS files
 .DS_Store
