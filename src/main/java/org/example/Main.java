@@ -1,7 +1,7 @@
 package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
+import org.example.dto.NoaaResponse;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,13 +11,15 @@ import java.net.http.HttpResponse;
 public class Main {
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    // The NOAA API does redirects so in order to get an HTTP 200 Code, allowing redirects is mandatory.
+    private static final HttpClient http = HttpClient.newBuilder()
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .build();
+
     public static void main(String[] args) throws Exception {
 
-        HttpClient http = HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
-
-        String url = "https://api.weather.gov/points/25.25255556,-80.6662611";
+        // API Endpoint
+        String url = "https://api.weather.gov/stations/KTMB/observations/latest";
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -34,18 +36,14 @@ public class Main {
         }
 
         String body = response.body();
+        var test = mapper.readValue(body, NoaaResponse.class);
 
-        JsonNode root = mapper.readTree(body);
-
-        int id = root.get("id").asInt();
-        String title = root.get("title").asText();
-        boolean completed = root.get("completed").asBoolean();
-
-        System.out.println("ID:        " + id);
-        System.out.println("Title:     " + title);
-        System.out.println("Completed: " + completed);
+        System.out.println("Wetterstations ID: " + test.stationId());
+        System.out.println("Temperatur: " + test.temperatureCelsius() + "°");
+        System.out.println("Luftfeuchtigkeit: " + test.relativeHumidity());
+        System.out.println("Datenzeitraum: " + test.timestamp());
 
         System.out.println("\nPretty JSON:\n" +
-                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
+                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
     }
 }
