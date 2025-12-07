@@ -62,7 +62,7 @@ public class WeatherDataService {
         }
     }
 
-    public NoaaResponse getData() throws IOException, InterruptedException {
+    public NoaaResponse getData(){
 
         final String apiResult = fetchRawJson();
         return parse(apiResult);
