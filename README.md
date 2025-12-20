@@ -22,7 +22,7 @@ https://api.weather.gov/stations/KTMB/observations/latest
 
 #### 💧 USGS
 ```
-https://waterservices.usgs.gov/nwis/iv/?format=json&sites=251457080395802&parameterCd=00010,00095&period=PT2H
+https://waterservices.usgs.gov/nwis/iv/?format=json&sites=251457080395802&parameterCd=00010,00480&period=PT2H
 ```
 
 #### 📃 API-Docs
